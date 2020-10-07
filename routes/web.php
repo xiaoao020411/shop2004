@@ -33,3 +33,5 @@ Route::get('/login/list','LoginController@list');
 Route::get('/login/destroy/{id}','LoginController@destroy');
 Route::get('/login/edit/{id}','LoginController@edit');
 Route::post('/login/update/{id}','LoginController@update');
+Route::post('/login/loginDo','LoginController@loginDo');
+Route::get('/login/index','LoginController@index');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\LoginModel;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -37,7 +38,7 @@ class LoginController extends Controller
         $data = LoginModel::find($id);
         return view('login.edit',['data'=>$data]);
     }
-    public function update(Request $request, $id)
+    function update(Request $request, $id)
     {
         $data=$request->except('_token');
         
@@ -45,5 +46,25 @@ class LoginController extends Controller
         if ($res!==false) {
             return redirect('/login/list');
         }
+    }
+    function index(){
+        return view('login.index');
+    }
+    function loginDo(Request $request){
+        $data=$request->except('_token');
+        $user = DB::table('login')->where('user_name',$data['user_name'])->first();
+        // dd($user);
+        if(!$user){
+            return redirect('/login/index')->with('msg','没有此用户');
+        }
+        if($user->password!=md5($data['password'])){
+            return redirect('/login/index')->with('msg','密码错误');
+        }
+        session('admin',$user);
+        $user['last_login']=time();
+        $res = DB::table('login')->where('u_id',$user->u_id)->update($user);
+        dd($res);
+            return redirect('/list');
+        
     }
 }

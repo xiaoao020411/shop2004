@@ -15,4 +15,5 @@ class TestController extends Controller
         $goods = DB::table('goods')->where(['goods_name'=>'赫本风渔夫帽111'])->first();
         dd($goods);
     }
+    
 }
