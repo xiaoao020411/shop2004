@@ -12,6 +12,7 @@
 			<th>id</th>
 			<th>用户名</th>
 			<th>邮箱</th>
+			<th>注册时间</th>
 			<th>操作</th>
 		</tr>
 	</thead>
@@ -20,7 +21,8 @@
 		<tr>
 			<td>{{$v->u_id}}</td>
 			<td>{{$v->user_name}}</td>
-            <td>{{$v->email}}</td>
+			<td>{{$v->email}}</td>
+			<td>{{date('Y-m-d',$v->reg_time)}}</td>
 			<td><a href="{{url('/login/edit/'.$v->u_id)}}" class="btn btn-info">编辑</a>|
 				<a href="{{url('/login/destroy/'.$v->u_id)}}" class="btn btn-danger">删除</a>
 			</td>

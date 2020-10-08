@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\LoginModel;
 use Illuminate\Support\Facades\DB;
+use Validator;
+use Illuminate\Validation\Rule;
 
 class LoginController extends Controller
 {
@@ -12,13 +14,28 @@ class LoginController extends Controller
         return view('login.create');
     }
     function save(Request $request){
+        $Validator = Validator::make($request->all(),[
+            'user_name' => 'required|unique:login',
+            'password'  => 'required',
+            'email'     => 'required'
+        ],[
+            'user_name.required'=>'用户名不能为空',
+            'password.required' =>'密码不能为空',
+            'email.required'    =>'邮箱不能为空'
+        ]);
+        if($Validator->fails()){
+            return redirect('/login/create')
+            ->withErrors($Validator)
+            ->withInput();
+        }
+        
         $data=$request->except('_token');
         //$data = $request->input();
         $data['password']=md5($data['password']);
         $data['reg_time']=time();
         $res = LoginModel::insert($data);
         if($res){
-            return redirect('/login/list');
+            return redirect('/login/index');
         }
     }
 
@@ -53,7 +70,7 @@ class LoginController extends Controller
     function loginDo(Request $request){
         $data=$request->except('_token');
         $user = DB::table('login')->where('user_name',$data['user_name'])->first();
-        // dd($user);
+        //dd($user);
         if(!$user){
             return redirect('/login/index')->with('msg','没有此用户');
         }
@@ -61,10 +78,10 @@ class LoginController extends Controller
             return redirect('/login/index')->with('msg','密码错误');
         }
         session('admin',$user);
-        $user['last_login']=time();
-        $res = DB::table('login')->where('u_id',$user->u_id)->update($user);
-        dd($res);
-            return redirect('/list');
+        $data['last_login']=time();
+        $res = DB::table('login')->where('u_id',$user->u_id)->update($data);
+        // dd($res);
+            return redirect('/login/list');
         
     }
 }
