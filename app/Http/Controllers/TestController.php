@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class TestController extends Controller
 {
@@ -12,8 +13,10 @@ class TestController extends Controller
         //dd($brand);
         //$indexregister = DB::table('indexregister')->find(2);
         //dd($indexregister);
-        $goods = DB::table('goods')->where(['goods_name'=>'赫本风渔夫帽111'])->first();
-        dd($goods);
+        
     }
-    
-}
+    function redis(){
+        $num = Redis::incr('count');
+        echo $num;
+    }
+} 
