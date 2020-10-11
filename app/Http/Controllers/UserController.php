@@ -7,7 +7,6 @@ use App\Model\UserModel;
 use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redis;
-
 class UserController extends Controller
 {
     function create(){
@@ -50,21 +49,31 @@ class UserController extends Controller
         }
         $user = UserModel::where($where)->first();
         //dd($user);
+        $count=Redis::get($user->id);
+        //$login_time = ceil(Redis::TTL("login_time:".$user->id) / 60);
+        $out_time=(ceil((Redis::TTL($user->id)/60)));
+        //  dd($out_time);
+            //判断错误次数
+            if($count>=5){
+                    return redirect('/user/index')->with('msg','密码错误次数过多,请'.$out_time.'分钟后在来');
+            }
         if(!$user){
-            return redirect('/user/index')->with('msg','用户不存在');
+            return redirect('/user/login')->with('msg','用户不存在');
         }
         if(!password_verify($data['pwd'],$user['pwd'])){
+             //用redis自增记录错误次数
+             Redis::incr($user->id);
+             $count=Redis::get($user->id);
+             //判断错误次数
+             if($count>=5){
+                 Redis::SETEX($user->id,60*60,5);
+                     return redirect('/user/index')->with('msg','密码错误次数过多,请一个小时候在来');
+             }
             return redirect('/user/index')->with('msg','密码不正确');
-            $num = Redis::incr('count');
-            if($num>=5){
-                
-            }
         }
-
-
-        
         $ass = ['login_ip'=>$add];
         $res = UserModel::where('id',$user['id'])->update($ass);
+        session(['login'=>$user]);
         return redirect('/user/list');
     }
 }

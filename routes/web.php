@@ -11,11 +11,13 @@
 |
 */
 
-Route::get('/', function () {
+//use Illuminate\Routing\Route;
+
+Route::get('/', function(){
     echo phpinfo();
 });
 Route::get('/test','TestController@test');
-Route::get('/redis','TestController@redis');
+
 
 Route::get('/student','StudentController@index');
 Route::post('/save','StudentController@save');
@@ -37,13 +39,14 @@ Route::post('/login/loginDo','LoginController@loginDo');
 Route::get('/login/index','LoginController@index');
 
 
-Route::prefix('user')->group(function(){
+Route::prefix('user')->middleware('UserLogin')->group(function(){
     Route::get('create','UserController@create');
     Route::post('save','UserController@save');
     Route::get('list','UserController@list');
     Route::get('destroy/{id}','UserController@destroy');
     Route::get('edit/{id}','UserController@edit');
     Route::post('update/{id}','UserController@update');
-    Route::post('logindo','UserController@logindo');
-    Route::get('index','UserController@index');
+   
 });
+Route::post('/user/logindo','UserController@logindo');
+Route::get('/user/index','UserController@index');
