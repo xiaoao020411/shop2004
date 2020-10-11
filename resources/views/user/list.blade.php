@@ -28,7 +28,7 @@
 			
 		</tr>
 		@endforeach
-	</tbody>
+		<a href="{{url('user/loginout')}}">退出</a>	</tbody>
 
 </body>
 </html>

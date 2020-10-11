@@ -76,4 +76,8 @@ class UserController extends Controller
         session(['login'=>$user]);
         return redirect('/user/list');
     }
+    function loginout(){
+        session(['login'=>null]);
+        return redirect('/user/index');
+    }
 }

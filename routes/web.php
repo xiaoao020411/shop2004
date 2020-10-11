@@ -46,6 +46,7 @@ Route::prefix('user')->middleware('UserLogin')->group(function(){
     Route::get('destroy/{id}','UserController@destroy');
     Route::get('edit/{id}','UserController@edit');
     Route::post('update/{id}','UserController@update');
+    Route::get('loginout','UserController@loginout');
    
 });
 Route::post('/user/logindo','UserController@logindo');
